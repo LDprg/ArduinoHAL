@@ -6,6 +6,7 @@
  */ 
 #include "uno_def.h"
 #include <avr/io.h>
+#include <limits.h>
 
 void usart_std_init()
 {
@@ -30,7 +31,6 @@ void usart_init(USART_MODE _mode, USART_CHAR_SIZE _charsize, USART_STOP_BIT _sto
 	
 	switch(_charsize)
 	{
-		default:
 		case BIT5:
 			break;
 		case BIT6:
@@ -38,6 +38,7 @@ void usart_init(USART_MODE _mode, USART_CHAR_SIZE _charsize, USART_STOP_BIT _sto
 			break;
 		case BIT9:
 			_ON(UCSR0C, UCSZ02);
+		default:
 		case BIT8:
 			_ON(UCSR0C, UCSZ00);
 		case BIT7:
@@ -56,9 +57,6 @@ void usart_init(USART_MODE _mode, USART_CHAR_SIZE _charsize, USART_STOP_BIT _sto
 			_ON(UCSR0C, UPM01);
 			break;
 	}
-	
-	_ON(UCSR0C, UCSZ01);
-	_ON(UCSR0C, UCSZ00);
 }
 
 char usart_getc()
@@ -85,4 +83,27 @@ void usart_setc_ifready(char c)
 {
 	if(!USART_READY)
 		UDR0 = c;
+}
+
+void usart_setstr(char *str)
+{
+	while(*str)
+		usart_setc(*str++);
+}
+
+void usart_setint(int i, BASE base)
+{	
+	int size = 0;
+	int rev = 0;
+	while (i != 0) {
+		rev = rev * base + i % base;
+		i /= base;
+		++size;
+	}
+	
+	for(;size>0;--size)
+	{
+		usart_setc((rev%base)+'0');
+		rev/=base;
+	}
 }
