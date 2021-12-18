@@ -5,11 +5,11 @@
  *  Author: LD
  */ 
 
-#include "uno_def.h"
-#include "glob_def.h"
-
 #ifndef SHIELD_DEF_H_
 #define SHIELD_DEF_H_
+
+#include "glob_def.h"
+#include "uno_def.h"
 
 // LEDs
 #define D1 P13

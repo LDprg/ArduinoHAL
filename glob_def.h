@@ -10,10 +10,17 @@
 #define GLOB_DEF_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifndef F_CPU
     #define F_CPU 16000000UL	// 16 MHZ
 #endif /* F_CPU */
+
+#ifndef	BAUD
+	#define BAUD 9600UL
+#endif /* BAUD */
+
+#define _delay_s(__s) _delay_ms((__s)*1000)
 
 #define BIT(x) (1 << (x))
 

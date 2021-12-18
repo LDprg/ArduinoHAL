@@ -9,6 +9,9 @@
 #ifndef UNO_DEF_H_
 #define UNO_DEF_H_
 
+#include "glob_def.h"
+#include <util/setbaud.h>
+
 // LED
 #define LED P13
 #define _LED _P13
@@ -106,5 +109,52 @@
 #define _P2_ DDRD
 #define _P1_ DDRD
 #define _P0_ DDRD
+
+#define USART_READY _GET(UCSR0A, UDRE0)
+#define USART_RECIVE_COMPLETE _GET(UCSR0A, RXC0)
+#define USART_RECIVE_ENABLE() _ON(UCSR0B, RXEN0)
+#define USART_RECIVE_DISABLE() _OFF(UCSR0B, RXEN0)
+#define USART_TRANSMIT_COMPLETE _GET(UCSR0A, TXC0)
+#define USART_TRANSMIT_ENABLE() _ON(UCSR0B, TXEN0)
+#define USART_TRANSMIT_DISABLE() _OFF(UCSR0B, TXEN0)
+
+#define USART_ENABLE_INT_RX() _ON(UCSR0B, RXCIE0)
+#define USART_ENABLE_INT_TX() _ON(UCSR0B, TXCIE0)
+#define USART_ENABLE_INT_UDR() _ON(UCSR0B, UDRIE0)
+
+typedef enum 
+{
+	DISABLED,
+	EVEN,
+	ODD
+} USART_PARITY;
+	
+typedef enum 
+{
+	ONE = 0,
+	TWO = 1
+} USART_STOP_BIT;
+
+typedef enum 
+{
+	ASYNC = 0,
+	SYNC = 1
+} USART_MODE;
+
+typedef enum 
+{
+	BIT5,
+	BIT6,
+	BIT7,
+	BIT8,
+	BIT9
+} USART_CHAR_SIZE;
+
+void usart_std_init();
+void usart_init(USART_MODE _mode, USART_CHAR_SIZE _charsize, USART_STOP_BIT _stopbit, USART_PARITY _parity);
+char usart_getc();
+char usart_getc_ifready();
+void usart_setc(char c);
+void usart_setc_ifready(char c);
 
 #endif /* UNO_DEF_H_ */
