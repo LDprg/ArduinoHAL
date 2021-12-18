@@ -9,6 +9,12 @@
 #ifndef UNO_DEF_H_
 #define UNO_DEF_H_
 
+// LED
+#define LED P13
+#define _LED _P13
+#define __LED __P13
+#define _LED_ _P13_
+
 // Pins
 #define A0 PORTC0
 #define A1 PORTC1
