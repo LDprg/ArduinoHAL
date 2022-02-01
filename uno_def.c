@@ -107,3 +107,10 @@ void usart_setint(int i, BASE base)
 		rev/=base;
 	}
 }
+void usart_win_cursor(bool on)
+{
+	if(on)
+		usart_setstr("\e[?25h");
+	else
+		usart_setstr("\e[?25l");
+}

@@ -170,4 +170,7 @@ void usart_setc_ifready(char c);
 void usart_setstr(char *str);
 void usart_setint(int i, BASE base);
 
+
+void usart_win_cursor(bool onoff);
+
 #endif /* UNO_DEF_H_ */
