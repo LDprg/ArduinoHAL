@@ -114,3 +114,93 @@ void usart_win_cursor(bool on)
 	else
 		usart_setstr("\e[?25l");
 }
+
+void i2c_init(unsigned long clock, bool pullup)
+{
+	TWBR = ((F_CPU/clock) - 16)/2;
+	
+	INPUT(A5);
+	INPUT(A4);
+	
+	if(pullup)
+	{		
+		ON(A5);
+		ON(A4);
+	}
+	else
+	{
+		OFF(A5);
+		OFF(A4);
+	}
+}
+
+void i2c_twi_start()
+{
+	 TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
+	 while (!(TWCR & (1<<TWINT)));
+}
+
+void i2c_twi_tx(uint8_t data, I2C_ACK ack)
+{
+	TWDR = data;
+	TWCR = (1<<TWINT)|(1<<TWEN);
+	if (ack) TWCR |= (1<<TWEA);
+	while (!(TWCR & (1<<TWINT)));
+}
+
+void i2c_twi_tx16(uint16_t data, I2C_ACK ack)
+{
+	i2c_twi_tx(data>>8, NACK);
+	i2c_twi_tx((uint8_t)data, NACK);
+}
+
+uint8_t i2c_twi_rx(I2C_ACK ack)
+{
+	TWCR = (1<<TWINT)|(1<<TWEN);
+	if (ack) TWCR |= (1<<TWEA);
+	while (!(TWCR & (1<<TWINT)));
+	return TWDR;
+}
+
+void i2c_twi_stop()
+{
+	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
+}
+
+void i2c_tx(uint8_t address, uint8_t data, I2C_ACK ack)
+{
+	i2c_twi_start();
+	
+	//address &= 0b00000001 & WRITE;
+	
+	i2c_twi_tx(address, ACK);
+	i2c_twi_tx(data, ack);
+	
+	i2c_twi_stop();
+}
+
+uint8_t i2c_rx(uint8_t address, I2C_ACK ack)
+{
+	uint8_t data = 0;
+	i2c_twi_start();
+	
+	//address &= 0b00000001 & READ;
+	
+	i2c_twi_tx(address, ACK);
+	data = i2c_twi_rx(ack);
+	
+	i2c_twi_stop();
+	return data;
+}
+
+void i2c_tx16(uint8_t address, uint16_t data, I2C_ACK ack)
+{
+	i2c_twi_start();
+	
+	//address &= 0b00000001 & WRITE;
+	
+	i2c_twi_tx(data>>8, NACK);
+	i2c_twi_tx((uint8_t)data, NACK);
+	
+	i2c_twi_stop();
+}

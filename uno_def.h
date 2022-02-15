@@ -10,6 +10,7 @@
 #define UNO_DEF_H_
 
 #include "glob_def.h"
+#include "stdint.h"
 #include <util/setbaud.h>
 
 // LED
@@ -172,5 +173,30 @@ void usart_setint(int i, BASE base);
 
 
 void usart_win_cursor(bool onoff);
+
+typedef enum
+{
+	READ = 1,
+	WRITE = 0,
+} I2C_RW;
+
+typedef enum
+{
+	ACK = 0,
+	NACK = 1,
+} I2C_ACK;
+
+void i2c_init(unsigned long clock, bool pullup);
+
+void i2c_twi_start();
+void i2c_twi_tx(uint8_t data, I2C_ACK ack);
+void i2c_twi_tx16(uint16_t data, I2C_ACK ack);
+uint8_t i2c_twi_rx(I2C_ACK ack);
+void i2c_twi_stop();
+
+void i2c_tx(uint8_t address, uint8_t data, I2C_ACK ack);
+uint8_t i2c_rx(uint8_t address, I2C_ACK ack);
+
+void i2c_tx16(uint8_t address, uint16_t data, I2C_ACK ack);
 
 #endif /* UNO_DEF_H_ */
